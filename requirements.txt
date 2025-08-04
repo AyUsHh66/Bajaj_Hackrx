@@ -1,0 +1,27 @@
+# requirements.txt
+
+fastapi
+uvicorn[standard]
+celery
+redis
+python-dotenv
+pydantic-settings
+
+# LangChain packages
+langchain
+langchain-core
+langchain-community
+langchain-experimental
+langchain-neo4j
+langchain-ollama
+langchain-huggingface
+
+# LLM & Vector related
+llama-parse
+sentence-transformers
+torch
+transformers
+
+# Other
+pillow
+neo4j
