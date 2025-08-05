@@ -1,0 +1,15 @@
+# Dockerfile
+FROM python:3.11-slim
+
+# Set the working directory inside the container
+WORKDIR /code
+
+# Copy the requirements file and install dependencies
+COPY ./requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+# Copy the rest of your application code into the container
+COPY . /code
+
+# Expose the port that Uvicorn will run on
+EXPOSE 8000

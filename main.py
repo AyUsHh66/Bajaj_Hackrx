@@ -16,7 +16,7 @@ from database import graph
 
 # --- Configuration ---
 # In a real application, this would come from a secure source, not hardcoded.
-API_KEY = "attyansha" 
+API_KEY = "Rachu" 
 
 # Create a directory for temporary file downloads
 DOWNLOAD_DIR = Path("temp_downloads")
