@@ -15,6 +15,7 @@ langchain-experimental
 langchain-neo4j
 langchain-ollama
 langchain-huggingface
+langchain-google-genai
 
 # LLM & Vector related
 llama-parse
