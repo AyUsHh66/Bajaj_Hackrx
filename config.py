@@ -3,28 +3,21 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    # Pydantic will automatically read the variables from your .env file.
-    # The values here are the defaults if a variable is NOT in your .env file.
-
-    # Neo4j
-    NEO4J_URI: str = "bolt://localhost:7687"
-    NEO4J_USERNAME: str = "neo4j"
+    # --- Required settings that MUST be in the .env file ---
+    # Pydantic will raise an error on startup if these are not found.
+    NEO4J_URI: str
+    NEO4J_USERNAME: str
     NEO4J_PASSWORD: str
-
-    # LlamaParse
     LLAMA_CLOUD_API_KEY: str
+    GOOGLE_API_KEY: str
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
 
-    # Google (Optional)
-    GOOGLE_API_KEY: str | None = None
-
-    # Ollama
+    # --- Optional settings with sensible defaults ---
+    # These will be used if they are not found in the .env file.
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "mistral"
+    OLLAMA_MODEL: str = "llama3"
     OLLAMA_MULTIMODAL_MODEL: str = "llava"
-
-    # Celery
-    CELERY_BROKER_URL: str = "redis://localhost:6379/0"
-    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/1"
 
     class Config:
         # Tell Pydantic to look for a .env file

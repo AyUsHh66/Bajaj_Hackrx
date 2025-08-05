@@ -1,81 +1,71 @@
 # main.py
 
-import shutil
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
+import os
+import time
+import requests
+from fastapi import FastAPI, HTTPException, Depends, Security
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from celery.result import AsyncResult
 from pathlib import Path
 
-from models import UploadResponse, TaskStatusResponse, QueryRequest, QueryResponse
+from models import HackRxRequest, HackRxResponse
 from tasks import process_document_task
 from retrieval_service import RetrievalService
+# --- 1. Import the graph object to check for existing documents ---
+from database import graph
 
-# Create a directory for temporary file uploads
-UPLOAD_DIR = Path("temp_uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
+# --- Configuration ---
+# In a real application, this would come from a secure source, not hardcoded.
+API_KEY = "attyansha" 
+
+# Create a directory for temporary file downloads
+DOWNLOAD_DIR = Path("temp_downloads")
+DOWNLOAD_DIR.mkdir(exist_ok=True)
 
 app = FastAPI(
-    title="Multimodal Document Intelligence Platform",
-    description="API for uploading and querying complex documents.",
+    title="Document Intelligence API for HackRx",
+    description="Processes a document and answers questions about it.",
 )
 
-# --- Dependency Injection ---
-# This function creates the RetrievalService only when it's needed (i.e., for a /query request).
-# This prevents the server from crashing on startup if the index doesn't exist yet.
-def get_retrieval_service():
-    # We can add caching here in the future if needed
-    return RetrievalService()
+# --- Authentication ---
+security = HTTPBearer()
 
-@app.post("/upload", response_model=UploadResponse, status_code=202)
-async def upload_document(file: UploadFile = File(...)):
-    """
-    Accepts a document upload and queues it for processing.
-    """
-    try:
-        temp_file_path = UPLOAD_DIR / file.filename
-        with temp_file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+def get_api_key(credentials: HTTPAuthorizationCredentials = Security(security)):
+    """Validates the API key from the Authorization header."""
+    if credentials.scheme != "Bearer" or credentials.credentials != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or missing API key",
+        )
+    return credentials.credentials
 
-        task = process_document_task.delay(str(temp_file_path), file.filename)
-
-        return {
-            "task_id": task.id,
-            "filename": file.filename,
-            "message": "File uploaded successfully. Processing has started."
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
-
-@app.get("/tasks/status/{task_id}", response_model=TaskStatusResponse)
-def get_task_status(task_id: str):
-    """Polls for the status of a background task."""
-    task_result = AsyncResult(task_id)
-    result = None
-    if task_result.ready():
-        if task_result.successful():
-            result = task_result.get()
-        else:
-            result = str(task_result.info)
-
-    return {
-        "task_id": task_id,
-        "status": task_result.status,
-        "result": result
-    }
-
-@app.post("/query", response_model=QueryResponse)
-def query_documents(
-    request: QueryRequest,
-    service: RetrievalService = Depends(get_retrieval_service)
+# --- Main Endpoint ---
+@app.post("/hackrx/run", response_model=HackRxResponse)
+def run_pipeline(
+    request: HackRxRequest,
+    api_key: str = Depends(get_api_key)
 ):
     """
-    Accepts a query and returns an answer based on the knowledge graph.
+    This endpoint answers a list of questions based on the existing data
+    in the vector database, ignoring the 'documents' key in the request.
     """
     try:
-        response = service.answer_query(request.query)
-        return response
+        print("Bypassing ingestion. Answering questions from existing VectorDB data.")
+        
+        # --- Answer questions using the existing data ---
+        retrieval_service = RetrievalService()
+        answers = []
+        for question in request.questions:
+            print(f"Answering question: {question}")
+            answer_data = retrieval_service.answer_query(question)
+            answers.append(answer_data["answer"])
+            
+        return HackRxResponse(answers=answers)
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process query: {str(e)}")
+        print(f"An unexpected error occurred: {e}")
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Document Intelligence API"}
+    return {"message": "Welcome to the HackRx Document Intelligence API"}

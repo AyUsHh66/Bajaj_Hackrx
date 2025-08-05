@@ -1,14 +1,15 @@
-# ==========================================================
-# This is the complete and correct code for celery_app.py
-# ==========================================================
+# celery_app.py
 
-# 1. Load variables from .env file FIRST. This is the most important step.
+# 1. Load environment variables from .env file FIRST.
 from dotenv import load_dotenv
 load_dotenv()
 
-# 2. Now that environment variables are loaded, import other modules.
+# --- FIX: Import the ssl module ---
+import ssl
+
+# 2. Now import other modules that depend on those variables.
 from celery import Celery
-from config import settings # 'settings' will now have the correct values.
+from config import settings
 
 # 3. Create the Celery app instance.
 celery = Celery(
@@ -18,6 +19,15 @@ celery = Celery(
     include=["tasks"]
 )
 
+# --- FIX: Use the ssl.CERT_NONE constant instead of a string ---
+# This tells Celery how to handle the secure connection correctly.
 celery.conf.update(
     task_track_started=True,
+    broker_use_ssl={
+        'ssl_cert_reqs': ssl.CERT_NONE
+    },
+    redis_backend_use_ssl={
+        'ssl_cert_reqs': ssl.CERT_NONE
+    }
 )
+# --------------------------------------------------------
