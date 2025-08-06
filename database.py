@@ -1,3 +1,16 @@
+"""
+Neo4j database connection setup for the HackRx Document Intelligence API.
+
+This file establishes the connection to the Neo4j graph database using LangChain's 
+Neo4jGraph wrapper. The database is used for:
+1. Storing document chunks as vector embeddings
+2. Creating knowledge graphs from document content
+3. Enabling hybrid search (vector + graph) capabilities
+
+The connection uses credentials from the config module and includes debugging
+output to help troubleshoot connection issues.
+"""
+
 # database.py
 
 # 1. Make sure you have run this command in your terminal:

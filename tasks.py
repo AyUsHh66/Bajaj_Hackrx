@@ -1,3 +1,19 @@
+"""
+Celery background tasks for document processing.
+
+This file defines the Celery tasks that run in the background:
+1. process_document_task: Main task for processing uploaded documents
+   - Takes a file path and original filename
+   - Uses DocumentProcessor to parse and ingest the document
+   - Cleans up temporary files after processing
+   - Handles errors gracefully with proper cleanup
+
+The task uses the @celery.task(bind=True) decorator to enable:
+- Self-referencing for task metadata
+- Proper error handling and logging
+- Task state management
+"""
+
 import os
 from celery_app import celery
 from processing_service import DocumentProcessor

@@ -1,3 +1,29 @@
+"""
+Retrieval service for answering questions using Neo4j vector and graph search.
+
+This service provides intelligent question answering capabilities:
+1. Query Routing: Automatically determines the best retrieval strategy
+   - vector_search: For general questions, definitions, summaries
+   - graph_qa: For relationship and connection-based queries
+   - hybrid_search: For mixed question types
+
+2. Vector Search: Uses semantic similarity to find relevant document chunks
+3. Answer Synthesis: Uses Google Gemini to generate accurate answers from context
+4. Source Tracking: Maintains metadata about retrieved information
+
+Key Features:
+- Pre-initialized global connections for better performance
+- Intelligent query routing using structured LLM output
+- Strict context-based answering (no hallucination)
+- Comprehensive error handling and fallback responses
+
+The service uses:
+- Google Gemini 2.0 Flash for answer generation
+- HuggingFace sentence transformers for embeddings
+- Neo4j vector store for document retrieval
+- Structured output parsing for reliable routing decisions
+"""
+
 # retrieval_service.py
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -12,7 +38,7 @@ from config import settings
 from database import graph
 
 # --- Initialize models and embeddings once at startup ---
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY)
+llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=settings.GOOGLE_API_KEY)
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2",
     model_kwargs={"device": "cpu"}

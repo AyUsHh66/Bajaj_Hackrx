@@ -1,3 +1,20 @@
+"""
+Celery application configuration for background task processing.
+
+This file sets up the Celery distributed task queue for handling:
+1. Document processing tasks in the background
+2. Asynchronous file parsing and ingestion
+3. SSL configuration for secure Redis connections
+
+The Celery app is configured to:
+- Use Redis as both message broker and result backend
+- Handle SSL connections properly
+- Track task execution status
+- Include tasks from the tasks module
+
+Environment variables are loaded first to ensure proper configuration.
+"""
+
 # celery_app.py
 
 # 1. Load environment variables from .env file FIRST.

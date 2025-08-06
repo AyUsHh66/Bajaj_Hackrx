@@ -1,4 +1,36 @@
 # requirements.txt
+"""
+Python dependencies for the HackRx Document Intelligence API.
+
+This file contains all required Python packages organized by category:
+
+Core Web Framework:
+- fastapi: Modern web framework for building APIs
+- uvicorn: ASGI server for running FastAPI applications
+
+Background Processing:
+- celery: Distributed task queue for background processing
+- redis: In-memory data store used as Celery broker/backend
+- python-dotenv: Environment variable management
+- pydantic-settings: Settings management with type validation
+
+LangChain Ecosystem:
+- langchain*: Core framework and community packages for LLM applications
+- langchain-neo4j: Neo4j integration for graph databases
+- langchain-ollama: Local LLM integration
+- langchain-huggingface: HuggingFace model integration
+- langchain-google-genai: Google Gemini integration
+
+Machine Learning & NLP:
+- llama-parse: Document parsing service
+- sentence-transformers: Text embedding models
+- torch: PyTorch for ML computations
+- transformers: HuggingFace transformer models
+
+Utilities:
+- pillow: Image processing library
+- neo4j: Neo4j database driver
+"""
 
 fastapi
 uvicorn[standard]

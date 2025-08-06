@@ -1,3 +1,26 @@
+"""
+Document processing service for parsing and ingesting documents into Neo4j.
+
+This service handles the complete document processing pipeline:
+1. Document Parsing: Uses LlamaParse to extract text from PDFs and other formats
+2. Text Chunking: Creates hierarchical parent-child chunks for better retrieval
+3. Graph Extraction: Uses LLM to extract entities and relationships from text
+4. Neo4j Ingestion: Stores chunks as vectors and graphs in Neo4j database
+
+Key Components:
+- DocumentProcessor: Main class orchestrating the entire pipeline
+- Pydantic Models: Node, Relationship, Graph for structured LLM output
+- Hierarchical Chunking: Parent chunks (1024 chars) with child chunks (400 chars)
+- Graph Entity Extraction: Batch processing to identify entities and relationships
+- Multi-modal Support: Can handle images and complex document structures
+
+The service uses:
+- LlamaParse for document parsing
+- Ollama for local LLM inference
+- HuggingFace embeddings for vector representations
+- Neo4j for storage and retrieval
+"""
+
 # processing_service.py
 
 import os

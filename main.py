@@ -1,3 +1,16 @@
+"""
+Main FastAPI application for the HackRx Document Intelligence API.
+
+This file serves as the main entry point for the FastAPI application. It provides:
+1. API authentication using Bearer tokens
+2. A main endpoint (/hackrx/run) that processes questions about documents
+3. Document ingestion and question answering using existing vector database data
+4. Integration with Celery for background processing (though currently bypassed)
+
+The application uses a retrieval service to answer questions from pre-processed 
+documents stored in a Neo4j vector database.
+"""
+
 # main.py
 
 import os

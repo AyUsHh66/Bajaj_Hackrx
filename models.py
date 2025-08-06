@@ -1,3 +1,16 @@
+"""
+Pydantic models for the HackRx Document Intelligence API.
+
+This file defines all the data models used for API requests and responses:
+1. UploadResponse - Response model for document uploads
+2. TaskStatusResponse - Response model for Celery task status checking
+3. QueryRequest/QueryResponse - Models for individual query processing
+4. HackRxRequest/HackRxResponse - Main models for the /hackrx/run endpoint
+
+The models use Pydantic for data validation and serialization, ensuring
+type safety and automatic API documentation generation.
+"""
+
 # models.py
 
 from pydantic import BaseModel, Field

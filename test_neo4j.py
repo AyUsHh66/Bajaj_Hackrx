@@ -1,3 +1,22 @@
+"""
+Neo4j database connection test script.
+
+This utility script tests the connection to the Neo4j database and verifies:
+1. Basic connectivity using the neo4j Python driver
+2. Authentication with provided credentials
+3. APOC (Awesome Procedures on Cypher) plugin availability
+
+The script is useful for:
+- Debugging database connection issues
+- Verifying Neo4j setup before running the main application
+- Checking if required APOC procedures are installed
+
+Environment variables used:
+- NEO4J_URI: Database connection string (default: bolt://localhost:7687)
+- NEO4J_USERNAME: Database username (default: neo4j)
+- NEO4J_PASSWORD: Database password (default: Ayush@321)
+"""
+
 # test_neo4j.py
 import os
 from neo4j import GraphDatabase
