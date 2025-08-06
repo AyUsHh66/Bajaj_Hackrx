@@ -1,15 +1,30 @@
-# Dockerfile
-FROM python:3.11-slim
+# Use a base image with Python
+FROM python:3.10-slim
 
 # Set the working directory inside the container
-WORKDIR /code
+WORKDIR /app
 
-# Copy the requirements file and install dependencies
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the rest of your application code into the container
-COPY . /code
+# Install Ollama
+RUN curl -L https://ollama.com/download/ollama-linux-amd64 -o /usr/bin/ollama && chmod +x /usr/bin/ollama
 
-# Expose the port that Uvicorn will run on
+# Copy your application files
+COPY requirements.txt .
+COPY . .
+
+# Install Python packages
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy Supervisor configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Expose the FastAPI port
 EXPOSE 8000
+
+# The command to run when the container starts
+CMD ["/usr/bin/supervisord"]
